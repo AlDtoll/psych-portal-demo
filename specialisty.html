@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Специалисты — МирПомощи</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; color: #1e1b4b; background: #fafaff; }
+        nav {
+            background: white; border-bottom: 1px solid #ede9fe;
+            padding: 0 32px; display: flex; align-items: center;
+            justify-content: space-between; height: 68px;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .nav-logo { font-size: 1.25rem; font-weight: 800; color: #6d28d9; text-decoration: none; }
+        .nav-logo span { color: #1e1b4b; }
+        .nav-links { display: flex; gap: 28px; list-style: none; }
+        .nav-links a { text-decoration: none; color: #4b5563; font-size: 0.9rem; font-weight: 500; }
+        .nav-links a:hover, .nav-links a.active { color: #6d28d9; }
+        .btn-reg { background: #6d28d9; color: white; font-weight: 600; padding: 9px 20px; border-radius: 8px; text-decoration: none; font-size: 0.9rem; }
+
+        .page-header { background: linear-gradient(135deg, #4c1d95, #6d28d9); color: white; padding: 48px 32px; }
+        .page-header h1 { font-size: 2rem; font-weight: 800; margin-bottom: 8px; }
+        .page-header p { opacity: 0.85; }
+
+        .layout { display: grid; grid-template-columns: 260px 1fr; gap: 32px; max-width: 1100px; margin: 0 auto; padding: 40px 32px; }
+
+        /* FILTERS */
+        .filters { display: flex; flex-direction: column; gap: 24px; }
+        .filter-block h4 { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #6b7280; margin-bottom: 12px; }
+        .filter-options { display: flex; flex-direction: column; gap: 8px; }
+        .filter-option { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 0.9rem; color: #374151; }
+        .filter-option input { accent-color: #6d28d9; width: 16px; height: 16px; }
+        .price-inputs { display: flex; gap: 8px; align-items: center; }
+        .price-input { flex: 1; padding: 8px 10px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 0.85rem; color: #1e1b4b; font-family: inherit; }
+        .price-input:focus { outline: none; border-color: #6d28d9; }
+        .btn-apply { width: 100%; background: #6d28d9; color: white; border: none; border-radius: 10px; padding: 12px; font-weight: 700; cursor: pointer; font-size: 0.9rem; margin-top: 8px; transition: opacity 0.2s; }
+        .btn-apply:hover { opacity: 0.9; }
+
+        /* RESULTS */
+        .results-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+        .results-count { font-size: 0.9rem; color: #6b7280; }
+        .sort-select { padding: 8px 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 0.85rem; color: #374151; font-family: inherit; }
+        .sort-select:focus { outline: none; border-color: #6d28d9; }
+
+        .specs-list { display: flex; flex-direction: column; gap: 16px; }
+        .spec-card {
+            background: white; border-radius: 18px; padding: 24px;
+            box-shadow: 0 2px 12px rgba(109,40,217,0.06);
+            display: flex; gap: 20px; align-items: flex-start;
+            transition: box-shadow 0.2s;
+        }
+        .spec-card:hover { box-shadow: 0 6px 24px rgba(109,40,217,0.12); }
+        .spec-avatar { width: 72px; height: 72px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; flex-shrink: 0; }
+        .spec-body { flex: 1; }
+        .spec-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 2px; }
+        .spec-role { color: #6d28d9; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
+        .spec-meta { font-size: 0.8rem; color: #6b7280; margin-bottom: 10px; }
+        .spec-about { font-size: 0.88rem; color: #4b5563; line-height: 1.5; margin-bottom: 12px; }
+        .spec-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+        .spec-tag { background: #f5f3ff; color: #6d28d9; font-size: 0.72rem; font-weight: 600; padding: 4px 10px; border-radius: 12px; }
+        .spec-right { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; flex-shrink: 0; min-width: 140px; }
+        .spec-price { font-size: 1.1rem; font-weight: 800; }
+        .spec-price span { font-size: 0.75rem; font-weight: 400; color: #6b7280; }
+        .spec-rating { font-size: 0.85rem; font-weight: 600; }
+        .btn-book { background: #6d28d9; color: white; border: none; border-radius: 10px; padding: 10px 20px; font-weight: 700; cursor: pointer; font-size: 0.88rem; width: 100%; transition: opacity 0.2s; }
+        .btn-book:hover { opacity: 0.9; }
+        .badge-online { background: #d1fae5; color: #065f46; font-size: 0.7rem; font-weight: 700; padding: 3px 8px; border-radius: 10px; }
+
+        footer { background: #1e1b4b; color: rgba(255,255,255,0.5); text-align: center; padding: 24px; font-size: 0.82rem; }
+        footer a { color: rgba(255,255,255,0.5); }
+
+        @media (max-width: 768px) {
+            .layout { grid-template-columns: 1fr; }
+            .filters { display: none; }
+            .spec-card { flex-direction: column; }
+            .spec-right { align-items: flex-start; width: 100%; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="index.html" class="nav-logo">Мир<span>Помощи</span></a>
+    <ul class="nav-links">
+        <li><a href="specialisty.html" class="active">Специалисты</a></li>
+        <li><a href="#">Статьи</a></li>
+        <li><a href="kontakty.html">О нас</a></li>
+    </ul>
+    <a href="#" class="btn-reg">Стать специалистом</a>
+</nav>
+
+<div class="page-header">
+    <h1>Специалисты</h1>
+    <p>1 248 психологов, коучей и психотерапевтов</p>
+</div>
+
+<div class="layout">
+    <!-- FILTERS -->
+    <aside class="filters">
+        <div class="filter-block">
+            <h4>Специализация</h4>
+            <div class="filter-options">
+                <label class="filter-option"><input type="checkbox" checked> Психолог</label>
+                <label class="filter-option"><input type="checkbox" checked> Коуч</label>
+                <label class="filter-option"><input type="checkbox"> Психотерапевт</label>
+                <label class="filter-option"><input type="checkbox"> Семейный консультант</label>
+            </div>
+        </div>
+        <div class="filter-block">
+            <h4>Формат</h4>
+            <div class="filter-options">
+                <label class="filter-option"><input type="checkbox" checked> Онлайн</label>
+                <label class="filter-option"><input type="checkbox"> Офлайн (Москва)</label>
+                <label class="filter-option"><input type="checkbox"> Офлайн (другие города)</label>
+            </div>
+        </div>
+        <div class="filter-block">
+            <h4>Запрос</h4>
+            <div class="filter-options">
+                <label class="filter-option"><input type="checkbox"> Тревожность</label>
+                <label class="filter-option"><input type="checkbox"> Депрессия</label>
+                <label class="filter-option"><input type="checkbox"> Отношения</label>
+                <label class="filter-option"><input type="checkbox"> Карьера</label>
+                <label class="filter-option"><input type="checkbox"> Семья</label>
+                <label class="filter-option"><input type="checkbox"> Выгорание</label>
+            </div>
+        </div>
+        <div class="filter-block">
+            <h4>Стоимость сессии</h4>
+            <div class="price-inputs">
+                <input type="number" class="price-input" placeholder="от" value="1000">
+                <span style="color:#6b7280">—</span>
+                <input type="number" class="price-input" placeholder="до" value="10000">
+            </div>
+        </div>
+        <button class="btn-apply">Применить фильтры</button>
+    </aside>
+
+    <!-- RESULTS -->
+    <div>
+        <div class="results-header">
+            <div class="results-count">Найдено 1 248 специалистов</div>
+            <select class="sort-select">
+                <option>По рейтингу</option>
+                <option>По цене (дешевле)</option>
+                <option>По цене (дороже)</option>
+                <option>По опыту</option>
+            </select>
+        </div>
+
+        <div class="specs-list">
+            <div class="spec-card">
+                <div class="spec-avatar" style="background:#ede9fe;">🧑‍⚕️</div>
+                <div class="spec-body">
+                    <div class="spec-name">Анна Соколова</div>
+                    <div class="spec-role">Клинический психолог</div>
+                    <div class="spec-meta">Опыт 8 лет · МГУ им. Ломоносова · <span class="badge-online">онлайн</span></div>
+                    <div class="spec-about">Работаю с тревожностью, паническими атаками, депрессией. Использую КПТ и схема-терапию. Первая сессия — знакомство без давления.</div>
+                    <div class="spec-tags">
+                        <span class="spec-tag">Тревожность</span>
+                        <span class="spec-tag">Депрессия</span>
+                        <span class="spec-tag">КПТ</span>
+                        <span class="spec-tag">Панические атаки</span>
+                    </div>
+                </div>
+                <div class="spec-right">
+                    <div class="spec-price">3 500 ₽ <span>/ 50 мин</span></div>
+                    <div class="spec-rating">⭐ 4.97 · 84 отзыва</div>
+                    <button class="btn-book" onclick="alert('В реальном сайте — форма записи с календарём')">Записаться</button>
+                </div>
+            </div>
+
+            <div class="spec-card">
+                <div class="spec-avatar" style="background:#fce7f3;">👩‍💼</div>
+                <div class="spec-body">
+                    <div class="spec-name">Елена Громова</div>
+                    <div class="spec-role">Коуч ICF PCC</div>
+                    <div class="spec-meta">Опыт 5 лет · Сертификат ICF PCC · <span class="badge-online">онлайн</span></div>
+                    <div class="spec-about">Помогаю найти направление в карьере, поставить и достичь целей, выйти из состояния выгорания. 200+ успешных клиентов.</div>
+                    <div class="spec-tags">
+                        <span class="spec-tag">Карьера</span>
+                        <span class="spec-tag">Цели</span>
+                        <span class="spec-tag">Выгорание</span>
+                        <span class="spec-tag">Личностный рост</span>
+                    </div>
+                </div>
+                <div class="spec-right">
+                    <div class="spec-price">4 200 ₽ <span>/ 60 мин</span></div>
+                    <div class="spec-rating">⭐ 4.95 · 61 отзыв</div>
+                    <button class="btn-book" onclick="alert('В реальном сайте — форма записи с календарём')">Записаться</button>
+                </div>
+            </div>
+
+            <div class="spec-card">
+                <div class="spec-avatar" style="background:#d1fae5;">👨‍🏫</div>
+                <div class="spec-body">
+                    <div class="spec-name">Михаил Зайцев</div>
+                    <div class="spec-role">Семейный психолог</div>
+                    <div class="spec-meta">Опыт 12 лет · СПБГУ · онлайн и офлайн (СПб)</div>
+                    <div class="spec-about">Работаю с парами и семьями: конфликты, кризисы, воспитание детей. Провожу как совместные, так и индивидуальные сессии.</div>
+                    <div class="spec-tags">
+                        <span class="spec-tag">Семья</span>
+                        <span class="spec-tag">Пары</span>
+                        <span class="spec-tag">Дети</span>
+                        <span class="spec-tag">Конфликты</span>
+                    </div>
+                </div>
+                <div class="spec-right">
+                    <div class="spec-price">2 800 ₽ <span>/ 50 мин</span></div>
+                    <div class="spec-rating">⭐ 4.98 · 127 отзывов</div>
+                    <button class="btn-book" onclick="alert('В реальном сайте — форма записи с календарём')">Записаться</button>
+                </div>
+            </div>
+
+            <div class="spec-card">
+                <div class="spec-avatar" style="background:#fef3c7;">🧘‍♀️</div>
+                <div class="spec-body">
+                    <div class="spec-name">Ольга Лисицына</div>
+                    <div class="spec-role">Психотерапевт</div>
+                    <div class="spec-meta">Опыт 15 лет · РНИМУ · <span class="badge-online">онлайн</span></div>
+                    <div class="spec-about">Медицинский психолог с психотерапевтической практикой. Работаю с расстройствами настроения, ПТСР, психосоматикой.</div>
+                    <div class="spec-tags">
+                        <span class="spec-tag">ПТСР</span>
+                        <span class="spec-tag">Психосоматика</span>
+                        <span class="spec-tag">Настроение</span>
+                        <span class="spec-tag">Гештальт</span>
+                    </div>
+                </div>
+                <div class="spec-right">
+                    <div class="spec-price">5 000 ₽ <span>/ 60 мин</span></div>
+                    <div class="spec-rating">⭐ 4.96 · 203 отзыва</div>
+                    <button class="btn-book" onclick="alert('В реальном сайте — форма записи с календарём')">Записаться</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>Демо-пример · Сайт сделан в <a href="https://sitebystro.ru" target="_blank">СайтБыстро</a></footer>
+</body>
+</html>
